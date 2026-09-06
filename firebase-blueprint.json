@@ -1,0 +1,507 @@
+{
+  "entities": {
+    "JournalEntry": {
+      "title": "JournalEntry",
+      "description": "A user-authored journal entry or reflection conversation",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the entry",
+          "maxLength": 128
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner user ID",
+          "maxLength": 128
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the reflection",
+          "maxLength": 200
+        },
+        "category": {
+          "type": "string",
+          "description": "Category tag",
+          "enum": ["reflection", "brainstorm", "gratitude", "general", "summary"]
+        },
+        "messages": {
+          "type": "array",
+          "description": "List of multi-turn conversational messages between user and Gemini"
+        },
+        "summary": {
+          "type": "string",
+          "description": "Gemini-generated summary or synthesis",
+          "maxLength": 5000
+        },
+        "tags": {
+          "type": "array",
+          "description": "List of user-selected keywords"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of creation"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last update"
+        },
+        "excludedFromAI": {
+          "type": "boolean",
+          "description": "Whether this journal entry is excluded from AI memory extraction and retrieval"
+        }
+      },
+      "required": ["id", "userId", "title", "messages", "createdAt", "updatedAt"]
+    },
+    "ThoughtThread": {
+      "title": "ThoughtThread",
+      "description": "An evolving thought thread connecting semantically related journal entries",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the thought thread",
+          "maxLength": 128
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner user ID",
+          "maxLength": 128
+        },
+        "title": {
+          "type": "string",
+          "description": "Short AI-generated title of the thread",
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string",
+          "description": "Short description of what the thread is about",
+          "maxLength": 1000
+        },
+        "entryIds": {
+          "type": "array",
+          "description": "List of related journal entry IDs"
+        },
+        "entryCount": {
+          "type": "number",
+          "description": "Number of related entries"
+        },
+        "startedAt": {
+          "type": "string",
+          "description": "Date the thread started (ISO timestamp)"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Date the thread was most recently updated (ISO timestamp)"
+        }
+      },
+      "required": ["id", "userId", "title", "description", "entryIds", "startedAt", "updatedAt"]
+    },
+    "UnfinishedThought": {
+      "title": "UnfinishedThought",
+      "description": "An idea, decision, question, or goal left unresolved in past reflections",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the unfinished thought",
+          "maxLength": 128
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner user ID",
+          "maxLength": 128
+        },
+        "title": {
+          "type": "string",
+          "description": "Short title of the unfinished thought",
+          "maxLength": 200
+        },
+        "originalContext": {
+          "type": "string",
+          "description": "Quote or context snippet from original reflection",
+          "maxLength": 3000
+        },
+        "dateFirstMentioned": {
+          "type": "string",
+          "description": "ISO date string when first recorded"
+        },
+        "entryId": {
+          "type": "string",
+          "description": "ID of the source journal entry",
+          "maxLength": 128
+        },
+        "threadId": {
+          "type": "string",
+          "description": "ID of associated thought thread, if any",
+          "maxLength": 128
+        },
+        "threadTitle": {
+          "type": "string",
+          "description": "Title of associated thought thread",
+          "maxLength": 200
+        },
+        "whyUnfinished": {
+          "type": "string",
+          "description": "Objective explanation of why considered unresolved",
+          "maxLength": 1000
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status of the thought",
+          "enum": ["active", "resolved", "dismissed", "snoozed"]
+        },
+        "resolvedAt": {
+          "type": "string",
+          "description": "ISO date string when marked resolved"
+        },
+        "remindAt": {
+          "type": "string",
+          "description": "ISO date string when to remind user"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of creation"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last update"
+        }
+      },
+      "required": ["id", "userId", "title", "originalContext", "dateFirstMentioned", "entryId", "whyUnfinished", "status", "createdAt", "updatedAt"]
+    },
+    "PerspectiveReplay": {
+      "title": "PerspectiveReplay",
+      "description": "A structured comparison between past and current perspectives on an older journal entry",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the replay",
+          "maxLength": 128
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner user ID",
+          "maxLength": 128
+        },
+        "originalEntryId": {
+          "type": "string",
+          "description": "ID of the original journal entry being replayed",
+          "maxLength": 128
+        },
+        "originalEntryTitle": {
+          "type": "string",
+          "description": "Title of original journal entry",
+          "maxLength": 200
+        },
+        "originalEntryDate": {
+          "type": "string",
+          "description": "ISO date string when original entry was recorded"
+        },
+        "reflectionQuestion": {
+          "type": "string",
+          "description": "The reflection starter question presented to the user",
+          "maxLength": 500
+        },
+        "originalPerspective": {
+          "type": "string",
+          "description": "Summary of what the user thought then",
+          "maxLength": 4000
+        },
+        "currentPerspective": {
+          "type": "string",
+          "description": "Summary of what the user thinks now",
+          "maxLength": 4000
+        },
+        "whatChanged": {
+          "type": "string",
+          "description": "Structured breakdown of differences in stance or thinking",
+          "maxLength": 3000
+        },
+        "whatStayedConsistent": {
+          "type": "string",
+          "description": "Structured breakdown of consistent values or principles",
+          "maxLength": 3000
+        },
+        "possibleReasons": {
+          "type": "string",
+          "description": "Reasons for the shift supported strictly by user journal history",
+          "maxLength": 3000
+        },
+        "newInsight": {
+          "type": "string",
+          "description": "Optional emergent realization or synthesis",
+          "maxLength": 2000
+        },
+        "replayDate": {
+          "type": "string",
+          "description": "ISO timestamp when the replay was performed"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of creation"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last update"
+        }
+      },
+      "required": ["id", "userId", "originalEntryId", "originalPerspective", "currentPerspective", "whatChanged", "whatStayedConsistent", "replayDate", "createdAt", "updatedAt"]
+    },
+    "ActionExperiment": {
+      "title": "ActionExperiment",
+      "description": "A concrete, small, optional experiment derived from recurring patterns in Thought Threads",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the action experiment",
+          "maxLength": 128
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner user ID",
+          "maxLength": 128
+        },
+        "threadId": {
+          "type": "string",
+          "description": "Associated Thought Thread ID",
+          "maxLength": 128
+        },
+        "threadTitle": {
+          "type": "string",
+          "description": "Associated Thought Thread title",
+          "maxLength": 200
+        },
+        "entryIds": {
+          "type": "array",
+          "description": "List of journal entry IDs providing evidence",
+          "items": { "type": "string" }
+        },
+        "insight": {
+          "type": "string",
+          "description": "The recurring pattern or concern identified across entries",
+          "maxLength": 3000
+        },
+        "experiment": {
+          "type": "string",
+          "description": "The specific, small, realistic experiment to test",
+          "maxLength": 3000
+        },
+        "timeframe": {
+          "type": "string",
+          "description": "Suggested duration or timeframe for the experiment",
+          "maxLength": 200
+        },
+        "evidenceQuotes": {
+          "type": "array",
+          "description": "Direct quotes or references from journal entries providing evidence",
+          "items": { "type": "string" }
+        },
+        "whyThisExperiment": {
+          "type": "string",
+          "description": "Explanation connecting the experiment to the journal content without life-improving guarantees",
+          "maxLength": 2000
+        },
+        "status": {
+          "type": "string",
+          "description": "Action experiment status",
+          "enum": ["suggested", "accepted", "in_progress", "completed", "changed", "abandoned", "dismissed"]
+        },
+        "notes": {
+          "type": "string",
+          "description": "Optional user notes or reflections on the experiment",
+          "maxLength": 4000
+        },
+        "changedExperimentText": {
+          "type": "string",
+          "description": "Updated experiment description if modified by the user",
+          "maxLength": 3000
+        },
+        "completedAt": {
+          "type": "string",
+          "description": "ISO timestamp when the user completed the experiment"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of creation"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last update"
+        }
+      },
+      "required": ["id", "userId", "insight", "experiment", "status", "createdAt", "updatedAt"]
+    },
+    "AIMemory": {
+      "title": "AIMemory",
+      "description": "User-controlled distilled factual memory used for long-term AI context",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the memory item",
+          "maxLength": 128
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner user ID",
+          "maxLength": 128
+        },
+        "fact": {
+          "type": "string",
+          "description": "The distilled fact, preference, or goal remembered by the AI",
+          "maxLength": 2000
+        },
+        "category": {
+          "type": "string",
+          "description": "Semantic memory category",
+          "maxLength": 100
+        },
+        "sourceType": {
+          "type": "string",
+          "description": "Origin source type",
+          "enum": ["journal_entry", "conversation_turn", "summary", "manual"]
+        },
+        "sourceId": {
+          "type": "string",
+          "description": "ID of the source journal entry or interaction",
+          "maxLength": 128
+        },
+        "sourceTitle": {
+          "type": "string",
+          "description": "Title of the source journal entry or interaction",
+          "maxLength": 200
+        },
+        "threadId": {
+          "type": "string",
+          "description": "Optional associated thought thread ID",
+          "maxLength": 128
+        },
+        "threadTitle": {
+          "type": "string",
+          "description": "Optional associated thought thread title",
+          "maxLength": 200
+        },
+        "status": {
+          "type": "string",
+          "description": "Status of memory item in AI retrieval",
+          "enum": ["active", "forgotten", "excluded"]
+        },
+        "hasEmbedding": {
+          "type": "boolean",
+          "description": "Whether a vector embedding is associated with this memory"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of creation"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last update"
+        }
+      },
+      "required": ["id", "userId", "fact", "category", "sourceType", "sourceId", "status", "createdAt", "updatedAt"]
+    },
+    "AIMemoryEmbedding": {
+      "title": "AIMemoryEmbedding",
+      "description": "Isolated vector embedding record corresponding to an AI memory item",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Memory ID this embedding belongs to",
+          "maxLength": 128
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner user ID",
+          "maxLength": 128
+        },
+        "memoryId": {
+          "type": "string",
+          "description": "Associated memory document ID",
+          "maxLength": 128
+        },
+        "vector": {
+          "type": "array",
+          "description": "Float array of embedding coordinates"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of generation"
+        }
+      },
+      "required": ["id", "userId", "memoryId", "vector", "createdAt"]
+    },
+    "UserMemorySettings": {
+      "title": "UserMemorySettings",
+      "description": "User preferences for AI long-term memory creation and retrieval",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Settings document ID",
+          "maxLength": 128
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner user ID",
+          "maxLength": 128
+        },
+        "memoryCreationEnabled": {
+          "type": "boolean",
+          "description": "Master switch to enable or disable future AI memory creation"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last settings modification"
+        }
+      },
+      "required": ["id", "userId", "memoryCreationEnabled", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/entries/{entryId}": {
+      "schema": "JournalEntry",
+      "description": "User-isolated journal entries and reflection conversation logs"
+    },
+    "/users/{userId}/threads/{threadId}": {
+      "schema": "ThoughtThread",
+      "description": "User-isolated evolving thought threads connecting related journal entries"
+    },
+    "/users/{userId}/unfinished_thoughts/{thoughtId}": {
+      "schema": "UnfinishedThought",
+      "description": "User-isolated unfinished thoughts surfaced from past reflections"
+    },
+    "/users/{userId}/replays/{replayId}": {
+      "schema": "PerspectiveReplay",
+      "description": "User-isolated perspective replays comparing past vs current viewpoints"
+    },
+    "/users/{userId}/actions/{actionId}": {
+      "schema": "ActionExperiment",
+      "description": "User-isolated small concrete experiments derived from recurring thought threads"
+    },
+    "/users/{userId}/memories/{memoryId}": {
+      "schema": "AIMemory",
+      "description": "User-isolated remembered items used for contextual AI reflection"
+    },
+    "/users/{userId}/ai_memories/{memoryId}": {
+      "schema": "AIMemory",
+      "description": "User-isolated remembered items used for contextual AI reflection"
+    },
+    "/users/{userId}/memory_embeddings/{embeddingId}": {
+      "schema": "AIMemoryEmbedding",
+      "description": "User-isolated vector embedding representations of memories"
+    },
+    "/users/{userId}/settings/{settingId}": {
+      "schema": "UserMemorySettings",
+      "description": "User-isolated preferences controlling AI memory creation and retrieval"
+    },
+    "/users/{userId}/memory_settings/{settingId}": {
+      "schema": "UserMemorySettings",
+      "description": "User-isolated preferences controlling AI memory creation and retrieval"
+    }
+  }
+}
